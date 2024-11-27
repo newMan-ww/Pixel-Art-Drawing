@@ -21,7 +21,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QOpenGLWidget" name="openGLWidget"/>
+       <widget class="MyOpenGLWidget" name="openGLWidget"/>
       </item>
       <item>
        <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0,15">
@@ -83,6 +83,7 @@
     </item>
    </layout>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -96,17 +97,23 @@
     <property name="title">
      <string>设置</string>
     </property>
-    <addaction name="action"/>
+    <addaction name="action_pixelSetting"/>
    </widget>
    <addaction name="menu"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
-  <action name="action">
+  <action name="action_pixelSetting">
    <property name="text">
     <string>像素点数量</string>
    </property>
   </action>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MyOpenGLWidget</class>
+   <extends>QOpenGLWidget</extends>
+   <header>myopenglwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

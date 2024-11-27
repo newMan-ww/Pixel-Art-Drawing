@@ -17,40 +17,40 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
-#include <QtWidgets/QOpenGLWidget>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
+#include "myopenglwidget.h"
 
 QT_BEGIN_NAMESPACE
 
 class Ui_MainWindow
 {
 public:
-    QAction *action;
+    QAction *action_pixelSetting;
     QWidget *centralwidget;
     QGridLayout *gridLayout;
     QHBoxLayout *horizontalLayout;
-    QOpenGLWidget *openGLWidget;
+    MyOpenGLWidget *openGLWidget;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout_2;
     QSpacerItem *horizontalSpacer;
     QPushButton *pushButton_hide_show;
     QSpacerItem *verticalSpacer;
     QWidget *widget_control;
+    QStatusBar *statusbar;
     QMenuBar *menubar;
     QMenu *menu;
-    QStatusBar *statusbar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(831, 575);
-        action = new QAction(MainWindow);
-        action->setObjectName(QString::fromUtf8("action"));
+        action_pixelSetting = new QAction(MainWindow);
+        action_pixelSetting->setObjectName(QString::fromUtf8("action_pixelSetting"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout = new QGridLayout(centralwidget);
@@ -58,7 +58,7 @@ public:
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(0);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        openGLWidget = new QOpenGLWidget(centralwidget);
+        openGLWidget = new MyOpenGLWidget(centralwidget);
         openGLWidget->setObjectName(QString::fromUtf8("openGLWidget"));
 
         horizontalLayout->addWidget(openGLWidget);
@@ -101,18 +101,18 @@ public:
         gridLayout->addLayout(horizontalLayout, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
+        statusbar = new QStatusBar(MainWindow);
+        statusbar->setObjectName(QString::fromUtf8("statusbar"));
+        MainWindow->setStatusBar(statusbar);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
         menubar->setGeometry(QRect(0, 0, 831, 21));
         menu = new QMenu(menubar);
         menu->setObjectName(QString::fromUtf8("menu"));
         MainWindow->setMenuBar(menubar);
-        statusbar = new QStatusBar(MainWindow);
-        statusbar->setObjectName(QString::fromUtf8("statusbar"));
-        MainWindow->setStatusBar(statusbar);
 
         menubar->addAction(menu->menuAction());
-        menu->addAction(action);
+        menu->addAction(action_pixelSetting);
 
         retranslateUi(MainWindow);
 
@@ -122,7 +122,7 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
-        action->setText(QApplication::translate("MainWindow", "\345\203\217\347\264\240\347\202\271\346\225\260\351\207\217", nullptr));
+        action_pixelSetting->setText(QApplication::translate("MainWindow", "\345\203\217\347\264\240\347\202\271\346\225\260\351\207\217", nullptr));
         pushButton_hide_show->setText(QApplication::translate("MainWindow", ">>", nullptr));
         menu->setTitle(QApplication::translate("MainWindow", "\350\256\276\347\275\256", nullptr));
     } // retranslateUi

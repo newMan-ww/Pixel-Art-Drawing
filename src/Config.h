@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #define CONFIG_FILE "config.json"
 
@@ -20,6 +21,8 @@ public:
 public:
     uint16_t m_rowNumber;
     uint16_t m_columnNumber;
+
+    std::vector<std::string> m_colorStr;
 };
 
 extern Config g_config;

@@ -23,8 +23,10 @@ void MainWindow::InitDialogControls()
     ui->horizontalLayout_2->setAlignment(ui->pushButton_hide_show, Qt::AlignRight);
 
     m_canvas.init(ui->openGLWidget);
+    m_canvas.setCanvasSize(g_config.m_rowNumber, g_config.m_rowNumber);
+    m_canvas.initColor(g_config.m_colorStr);
+
     ui->openGLWidget->setCanvas(&m_canvas);
-    reprintCanvse(true);
 }
 
 void MainWindow::on_pushButton_hide_show_clicked()
@@ -61,7 +63,7 @@ void MainWindow::reprintCanvse(bool shouldReprint)
 {
     if(shouldReprint)
     {
-        m_canvas.printPixels(g_config.m_rowNumber, g_config.m_rowNumber);
+        m_canvas.setCanvasSize(g_config.m_rowNumber, g_config.m_rowNumber);
         m_canvas.render();
     }
 }

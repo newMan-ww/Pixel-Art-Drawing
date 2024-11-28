@@ -42,6 +42,15 @@ void Config::read_config(std::string fileName)
 
         m_rowNumber = j["RowNumber"].get<uint16_t>();
         m_columnNumber = j["ColumnNumber"].get<uint16_t>();
+
+        // 解析颜色数组，并将其存入m_colors
+        if (j.contains("colors")) {
+            for (const auto& color : j["colors"]) {
+                if (color.is_string()) {
+                    m_colorStr.push_back(color.get<std::string>());
+                }
+            }
+        }
         
     } catch (const json::parse_error& e) {
         // 处理解析错误
@@ -60,6 +69,8 @@ void Config::write_config(std::string fileName)
 
     j["RowNumber"] = m_rowNumber;
     j["ColumnNumber"] = m_columnNumber;
+
+    j["colors"] = m_colorStr;  // 将颜色字符串数组直接写入JSON
 
     // 将JSON对象序列化为字符串
     std::string jsonString = j.dump(4); // 4表示缩进级别，使输出的JSON字符串更易读

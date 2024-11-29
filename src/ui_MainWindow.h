@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
@@ -40,6 +41,11 @@ public:
     QPushButton *pushButton_hide_show;
     QSpacerItem *verticalSpacer;
     QWidget *widget_control;
+    QGridLayout *gridLayout_2;
+    QVBoxLayout *verticalLayout_2;
+    QLabel *label_color;
+    QGridLayout *gridLayout_colors;
+    QSpacerItem *verticalSpacer_2;
     QStatusBar *statusbar;
     QMenuBar *menubar;
     QMenu *menu;
@@ -64,6 +70,7 @@ public:
         horizontalLayout->addWidget(openGLWidget);
 
         verticalLayout = new QVBoxLayout();
+        verticalLayout->setSpacing(0);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
@@ -87,6 +94,30 @@ public:
 
         widget_control = new QWidget(centralwidget);
         widget_control->setObjectName(QString::fromUtf8("widget_control"));
+        gridLayout_2 = new QGridLayout(widget_control);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
+        gridLayout_2->setContentsMargins(6, 6, 6, 6);
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        label_color = new QLabel(widget_control);
+        label_color->setObjectName(QString::fromUtf8("label_color"));
+        label_color->setMinimumSize(QSize(0, 15));
+        label_color->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_2->addWidget(label_color);
+
+        gridLayout_colors = new QGridLayout();
+        gridLayout_colors->setObjectName(QString::fromUtf8("gridLayout_colors"));
+
+        verticalLayout_2->addLayout(gridLayout_colors);
+
+
+        gridLayout_2->addLayout(verticalLayout_2, 0, 0, 1, 1);
+
+        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout_2->addItem(verticalSpacer_2, 1, 0, 1, 1);
+
 
         verticalLayout->addWidget(widget_control);
 
@@ -124,6 +155,7 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
         action_pixelSetting->setText(QApplication::translate("MainWindow", "\345\203\217\347\264\240\347\202\271\346\225\260\351\207\217", nullptr));
         pushButton_hide_show->setText(QApplication::translate("MainWindow", ">>", nullptr));
+        label_color->setText(QApplication::translate("MainWindow", "\351\242\234\350\211\262", nullptr));
         menu->setTitle(QApplication::translate("MainWindow", "\350\256\276\347\275\256", nullptr));
     } // retranslateUi
 

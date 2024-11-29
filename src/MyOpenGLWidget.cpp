@@ -57,15 +57,22 @@ void MyOpenGLWidget::mousePressEvent(QMouseEvent *event)
 // 处理鼠标移动事件
 void MyOpenGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    if (m_isDragging) {
-        QPoint delta = event->pos() - m_lastPos; // 计算鼠标移动的偏移量
-        m_lastPos = event->pos();  // 更新最后的鼠标位置
+        if (m_isDragging) {
+        // 计算鼠标移动的距离
+        int deltaX = abs(event->pos().x() - m_pressPos.x());
+        int deltaY = abs(event->pos().y() - m_pressPos.y());
 
-        // 更新画布的位置
-        if (m_canvas) {
-            m_canvas->moveCanvas(delta.x(), delta.y()); // 将偏移量传递给Canvas
+        // 如果鼠标移动的距离大于 3 像素，才开始拖拽
+        if (deltaX > 3 || deltaY > 3) {
+            QPoint delta = event->pos() - m_lastPos; // 计算鼠标移动的偏移量
+            m_lastPos = event->pos();  // 更新最后的鼠标位置
+
+            // 更新画布的位置
+            if (m_canvas) {
+                m_canvas->moveCanvas(delta.x(), delta.y()); // 将偏移量传递给Canvas
+            }
+            update();  // 重新绘制
         }
-        update();  // 重新绘制
     }
 }
 
@@ -80,7 +87,7 @@ void MyOpenGLWidget::mouseReleaseEvent(QMouseEvent *event)
         int deltaX = abs(event->pos().x() - m_pressPos.x());
         int deltaY = abs(event->pos().y() - m_pressPos.y());
 
-        if(deltaX <= 2 && deltaY <= 2)
+        if(deltaX <= 3 && deltaY <= 3)
         {
             // 计算点击的位置
             int x = event->x();
@@ -104,9 +111,8 @@ void MyOpenGLWidget::mouseReleaseEvent(QMouseEvent *event)
             // 获取该像素块的索引
             int pixelIndex = row * m_canvas->getCol() + col;
 
-            // 设置该像素块的颜色（假设我们使用 m_colors[5] 作为点击时的颜色）
-            uint16_t colorIndex = 5;  // 使用索引 5 对应的颜色
-            m_canvas->setPixelColor(pixelIndex, colorIndex);
+            // 设置该像素块的颜色（使用画笔颜色作为点击时的颜色）
+            m_canvas->setPixelColor(pixelIndex, m_canvas->getPainterColor());
 
             // 更新画布并重新绘制
             if (m_canvas) {

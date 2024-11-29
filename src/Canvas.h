@@ -52,6 +52,14 @@ public:
     int getCol() const { return m_col; }  // 获取列数
     int getRow() const { return m_row; }  // 获取行数
 
+    int getPainterColor() const { return m_painterColor; }  // 获取画笔颜色
+    void setPainterColor(uint16_t index) {
+        if(index < m_colors.size())
+        {
+           m_painterColor = index;
+        }
+    }
+
     void setPixelColor(int index, uint16_t colorIndex) { m_pixelColors[index] = colorIndex; } // 设置指定像素的颜色
     const std::vector<uint16_t>& getPixelColors() const { return m_pixelColors; }
 
@@ -70,6 +78,8 @@ private:
 
     std::vector<Color> m_colors;
     std::vector<uint16_t> m_pixelColors;     //存储每个像素点的颜色，uint16值对应m_colors对应索引的颜色
+
+    uint16_t m_painterColor = 0;
 };
 
 #endif

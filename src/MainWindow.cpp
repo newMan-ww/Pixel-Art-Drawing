@@ -21,12 +21,37 @@ void MainWindow::InitDialogControls()
 {
     //将缩放按钮的对其方式设置为右对齐
     ui->horizontalLayout_2->setAlignment(ui->pushButton_hide_show, Qt::AlignRight);
+    ui->label_color->setStyleSheet("QLabel { background-color: white; }");
 
     m_canvas.init(ui->openGLWidget);
     m_canvas.setCanvasSize(g_config.m_rowNumber, g_config.m_rowNumber);
     m_canvas.initColor(g_config.m_colorStr);
-
     ui->openGLWidget->setCanvas(&m_canvas);
+
+    initColorButton();
+}
+
+void MainWindow::initColorButton()
+{
+    std::vector<std::string> colorStr = g_config.m_colorStr;
+    for (int i = 0; i < colorStr.size(); ++i) {
+        // 创建按钮，按钮的背景色为对应的颜色
+        QPushButton *colorButton = new QPushButton(this);
+        colorButton->setStyleSheet("background-color: " + QString::fromStdString(colorStr[i]));
+
+        // 将按钮添加到布局
+        ui->gridLayout_colors->addWidget(colorButton, i / 5, i % 5);  // 每行最多显示5个按钮
+
+        // 连接点击事件
+        connect(colorButton, &QPushButton::clicked, this, [this, i]() {
+            onColorClicked(i);  // 传递颜色的索引
+        });
+    }
+}
+
+void MainWindow::onColorClicked(int colorIndex)
+{
+    m_canvas.setPainterColor(colorIndex);
 }
 
 void MainWindow::on_pushButton_hide_show_clicked()

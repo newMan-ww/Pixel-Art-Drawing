@@ -27,9 +27,9 @@ private slots:
 private:
     void InitDialogControls();
 
-private:
-    bool m_isDragging;  // 用于标记是否正在拖动
-    QPoint m_lastPos;   // 记录鼠标上次的位置
+    void initColorButton();
+
+    void onColorClicked(int colorIndex);
 
 private:
     Ui::MainWindow *ui;

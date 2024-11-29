@@ -40,12 +40,13 @@ void MainWindow::initColorButton()
 
     for (int i = 0; i < colorStr.size(); ++i) {
         // 创建按钮
-        QPushButton *colorButton = new QPushButton(this);  // 使用 GrayWhiteButton
+        QPushButton *colorButton = nullptr;  
 
         if (i == 0) {
-            colorButton = new GrayWhiteButton(this);
+            colorButton = new GrayWhiteButton(this);   //使用 GrayWhiteButton
         } else {
             // 其他按钮使用 colorStr 中的颜色
+            colorButton = new QPushButton(this);
             colorButton->setStyleSheet("background-color: " + QString::fromStdString(colorStr[i]));
         }
 

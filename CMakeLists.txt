@@ -36,6 +36,13 @@ else()
 
 endif()
 
+# 使用 file(GLOB ...) 获取 config 目录下的所有文件
+file(GLOB CONFIG_FILES ${CMAKE_SOURCE_DIR}/config/*)
+
+# 将这些文件复制到应用程序的执行目录（bin目录）
+file(COPY ${CONFIG_FILES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG})
+file(COPY ${CONFIG_FILES} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE})
+
 add_subdirectory(src)
 
 # 使用 file(GLOB ...) 获取 config 目录下的所有文件

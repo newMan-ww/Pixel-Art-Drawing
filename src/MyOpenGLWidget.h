@@ -35,6 +35,8 @@ private:
     bool m_isDragging;  // 用于标记是否正在拖动
     QPoint m_lastPos;   // 记录鼠标上次的位置，用来控制拉拽位置
     QPoint m_pressPos;   // 记录鼠标上次的位置，用来控制鼠标释放时要不要改变像素点颜色
+
+    bool m_isRightClicking = false;//记录鼠标右键是否被按下
 };
 
 #endif // MYOPENGLWIDGET_H

@@ -52,6 +52,10 @@ void MyOpenGLWidget::mousePressEvent(QMouseEvent *event)
             m_pressPos = event->pos();
         }
     }
+    else if (event->button() == Qt::RightButton) {
+        // 右键按下时，开始右键长按
+        m_isRightClicking = true;
+    }
 }
 
 // 处理鼠标移动事件
@@ -72,6 +76,39 @@ void MyOpenGLWidget::mouseMoveEvent(QMouseEvent *event)
                 m_canvas->moveCanvas(delta.x(), delta.y()); // 将偏移量传递给Canvas
             }
             update();  // 重新绘制
+        }
+    }
+
+    //鼠标右键在按下过程中，碰到那个像素点的区域，就改变对应颜色
+    if (m_isRightClicking) {
+        // 右键长按并移动时，实时更新像素颜色
+        int x = event->x();
+        int y = event->y();
+
+        // 计算相对画布的坐标（偏移量）
+        x -= m_canvas->getoffsetX();
+        y += m_canvas->getoffsetY();
+
+        y = height() - y;  // OpenGL 的 y 坐标从底部开始增大
+
+        // 计算鼠标当前位置对应的像素块的行列
+        int row = y / (m_canvas->getPixelHeight() + m_canvas->getMargin());
+        int col = x / (m_canvas->getPixelWidth() + m_canvas->getMargin());
+
+        if (!isValidIndex(row, col)) {
+            return;
+        }
+
+        // 获取该像素块的索引
+        int pixelIndex = row * m_canvas->getCol() + col;
+
+        // 设置该像素块的颜色（使用画笔颜色作为点击时的颜色）
+        m_canvas->setPixelColor(pixelIndex, m_canvas->getPainterColor());
+
+        // 更新画布并重新绘制
+        if (m_canvas) {
+            m_canvas->render();
+            update();  // 触发窗口重绘
         }
     }
 }
@@ -120,7 +157,10 @@ void MyOpenGLWidget::mouseReleaseEvent(QMouseEvent *event)
                 update();  // 触发窗口重绘
             }
         }
-
+    }
+    else if (event->button() == Qt::RightButton) {
+        // 停止右键长按
+        m_isRightClicking = false;
     }
 }
 

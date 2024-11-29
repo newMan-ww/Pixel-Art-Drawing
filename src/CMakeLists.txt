@@ -14,6 +14,7 @@ if(WIN32)
         DialogPixelSetting.cpp
         Canvas.cpp
         MyOpenGLWidget.cpp
+        GrayWhiteButton.cpp
         )
 
     set(HEADERS
@@ -22,6 +23,7 @@ if(WIN32)
         DialogPixelSetting.h
         Canvas.h
         MyOpenGLWidget.h
+        GrayWhiteButton.h
         )
 
     set(FORMS

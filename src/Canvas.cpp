@@ -2,7 +2,7 @@
 #include "MyOpenGLWidget.h"
 
 Canvas::Canvas()
-    : m_openGL(nullptr), m_pixelWidth(20), m_pixelHeight(20), m_margin(1),
+    : m_openGL(nullptr), m_pixelWidth(21), m_pixelHeight(21), m_margin(1),
       m_offsetX(0), m_offsetY(0)
 {
 }
@@ -25,6 +25,8 @@ void Canvas::initColor(std::vector<std::string> colorStrings)
 {
     m_colors.clear();
 
+    m_colors.push_back(Color(-1.0,-1.0,-1.0));  //第一个元素为默认元素，用来指示无颜色
+
     for(int i = 0; i < colorStrings.size(); i++)
     {
         int hex = std::stoi(colorStrings[i].substr(1), nullptr, 16); // 去掉前缀 "#" 转换为十进制
@@ -35,7 +37,7 @@ void Canvas::initColor(std::vector<std::string> colorStrings)
         m_colors.push_back(Color(r,g,b));
     }
 
-    m_pixelColors.resize(m_row * m_col, 1);     //初始化每个像素的颜色
+    m_pixelColors.resize(m_row * m_col, 0);     //初始化每个像素的颜色
 }
 
 void Canvas::setCanvasSize(uint16_t newRow, uint16_t newCol)
@@ -66,7 +68,7 @@ void Canvas::setCanvasSize(uint16_t newRow, uint16_t newCol)
             }
             else
             {
-                newPixelColors[newIndex] = 1;
+                newPixelColors[newIndex] = 0;
             }
 
             // 迁移旧数据到新位置
@@ -88,14 +90,77 @@ void Canvas::render()
             // 获取当前像素的颜色索引，并找到对应的颜色
             uint16_t pixelIndex = i * m_col + j;
             uint16_t colorIndex = m_pixelColors[pixelIndex];
-            Color c = m_colors[colorIndex];  // 获取该像素的颜色
+
+            // 如果 colorIndex 为 0，表示要显示灰白交替的背景
+            if (colorIndex == 0) {
+                 paintBackground(x,y,i,j);
+            } else {
+                // 如果 colorIndex 不是 0，渲染正常颜色像素
+                paintPixel(x,y,colorIndex);
+            }
+
+            paintLine(x,y);
+        }
+    }
+}
+
+void Canvas::paintLine(int x, int y)
+{
+    // 绘制每个大像素点的分界线（黑色边框）
+    glBegin(GL_LINES);
+    glColor3f(0.0f, 0.0f, 0.0f); // 黑色边框
+    // 绘制左边框
+    glVertex2f(x, y);
+    glVertex2f(x, y + m_pixelHeight);
+
+    // 绘制右边框
+    glVertex2f(x + m_pixelWidth, y);
+    glVertex2f(x + m_pixelWidth, y + m_pixelHeight);
+
+    // 绘制上边框
+    glVertex2f(x, y);
+    glVertex2f(x + m_pixelWidth, y);
+
+    // 绘制下边框
+    glVertex2f(x, y + m_pixelHeight);
+    glVertex2f(x + m_pixelWidth, y + m_pixelHeight);
+    glEnd();
+}
+
+void Canvas::paintPixel(int x, int y, int colorIndex)
+{
+    Color c = m_colors[colorIndex];  // 获取该像素的颜色
+
+    glBegin(GL_QUADS);
+    glColor3f(c.r, c.g, c.b); // 设置像素颜色
+    glVertex2f(x, y);
+    glVertex2f(x + m_pixelWidth, y);
+    glVertex2f(x + m_pixelWidth, y + m_pixelHeight);
+    glVertex2f(x, y + m_pixelHeight);
+    glEnd();
+}
+
+void Canvas::paintBackground(int x, int y, int i, int j)
+{
+    // 计算小方块的尺寸（让每个像素背景由多个小方块组成）
+    int subPixelWidth = m_pixelWidth / 3;  // 设置每个小方块的宽度
+    int subPixelHeight = m_pixelHeight / 3; // 设置每个小方块的高度
+
+    // 绘制灰白交替的小方块
+    for (int subY = 0; subY < 3; ++subY) {
+        for (int subX = 0; subX < 3; ++subX) {
+            // 计算灰白交替颜色
+            Color bgColor = ((i + j + subX + subY) % 2 == 0) ? Color(0.9f, 0.9f, 0.9f) : Color(0.7f, 0.7f, 0.7f);
+
+            float subXPos = x + subX * subPixelWidth;
+            float subYPos = y + subY * subPixelHeight;
 
             glBegin(GL_QUADS);
-            glColor3f(c.r, c.g, c.b); // 设置像素颜色
-            glVertex2f(x, y);
-            glVertex2f(x + m_pixelWidth, y);
-            glVertex2f(x + m_pixelWidth, y + m_pixelHeight);
-            glVertex2f(x, y + m_pixelHeight);
+            glColor3f(bgColor.r, bgColor.g, bgColor.b); // 设置小方块的背景颜色
+            glVertex2f(subXPos, subYPos);
+            glVertex2f(subXPos + subPixelWidth, subYPos);
+            glVertex2f(subXPos + subPixelWidth, subYPos + subPixelHeight);
+            glVertex2f(subXPos, subYPos + subPixelHeight);
             glEnd();
         }
     }

@@ -1,7 +1,8 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "DialogPixelSetting.h"
-#include "config.h"
+#include "Config.h"
+#include "GrayWhiteButton.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -34,10 +35,19 @@ void MainWindow::InitDialogControls()
 void MainWindow::initColorButton()
 {
     std::vector<std::string> colorStr = g_config.m_colorStr;
+    // 在 colorStr 的开头插入一个灰白渐变的按钮
+    colorStr.insert(colorStr.begin(), "#C0C0C0");  // 灰色，作为默认渐变色的代表
+
     for (int i = 0; i < colorStr.size(); ++i) {
-        // 创建按钮，按钮的背景色为对应的颜色
-        QPushButton *colorButton = new QPushButton(this);
-        colorButton->setStyleSheet("background-color: " + QString::fromStdString(colorStr[i]));
+        // 创建按钮
+        QPushButton *colorButton = new QPushButton(this);  // 使用 GrayWhiteButton
+
+        if (i == 0) {
+            colorButton = new GrayWhiteButton(this);
+        } else {
+            // 其他按钮使用 colorStr 中的颜色
+            colorButton->setStyleSheet("background-color: " + QString::fromStdString(colorStr[i]));
+        }
 
         // 将按钮添加到布局
         ui->gridLayout_colors->addWidget(colorButton, i / 5, i % 5);  // 每行最多显示5个按钮

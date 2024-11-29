@@ -64,6 +64,13 @@ public:
     const std::vector<uint16_t>& getPixelColors() const { return m_pixelColors; }
 
 private:
+    void paintLine(int x, int y);
+
+    void paintPixel(int x, int y, int colorIndex);
+
+    void Canvas::paintBackground(int x, int y, int i, int j);
+
+private:
     MyOpenGLWidget* m_openGL;
 
     int m_pixelWidth;  // 每个像素点的宽度

@@ -1,8 +1,29 @@
 ﻿#include "Canvas.h"
 #include "MyOpenGLWidget.h"
 
+std::vector<uint16_t> g_pixelSize = {
+        3,
+        6,
+        9,
+        12,
+        15,
+        18,
+        21,
+        24,
+        27,
+        30,
+        33,
+        36,
+        39,
+        42,
+        45,
+        48,
+        51,
+        54,
+        57};
+
 Canvas::Canvas()
-    : m_openGL(nullptr), m_pixelWidth(21), m_pixelHeight(21), m_margin(1),
+    : m_openGL(nullptr), m_pixelWidth(21), m_pixelHeight(21), m_margin(0),
       m_offsetX(0), m_offsetY(0)
 {
 }
@@ -56,7 +77,7 @@ void Canvas::setCanvasSize(uint16_t newRow, uint16_t newCol)
 
     // 将旧的像素数据迁移到新的 vector 中
     for (uint16_t i = 0; i < m_row; ++i) {
-        for (uint16_t j = 0; j < m_row; ++j) {
+        for (uint16_t j = 0; j < m_col; ++j) {
             // 计算旧像素的索引
             uint16_t oldIndex = i * oldCol + j;
             // 计算新像素的索引
@@ -93,37 +114,49 @@ void Canvas::render()
 
             // 如果 colorIndex 为 0，表示要显示灰白交替的背景
             if (colorIndex == 0) {
-                 paintBackground(x,y,i,j);
+                 paintBackground(x, y, i, j);
             } else {
                 // 如果 colorIndex 不是 0，渲染正常颜色像素
-                paintPixel(x,y,colorIndex);
+                paintPixel(x, y, colorIndex);
             }
 
-            paintLine(x,y);
+            paintLine(x, y);
+
         }
     }
 }
 
+
 void Canvas::paintLine(int x, int y)
-{
+{   
     // 绘制每个大像素点的分界线（黑色边框）
     glBegin(GL_LINES);
     glColor3f(0.0f, 0.0f, 0.0f); // 黑色边框
-    // 绘制左边框
-    glVertex2f(x, y);
-    glVertex2f(x, y + m_pixelHeight);
 
-    // 绘制右边框
-    glVertex2f(x + m_pixelWidth, y);
-    glVertex2f(x + m_pixelWidth, y + m_pixelHeight);
+    // 绘制列分隔线（考虑 margin）
+    if (m_showColLine)
+    {
+        // 绘制左边框（考虑 margin）
+        glVertex2f(x, y);
+        glVertex2f(x, y + m_pixelHeight + m_margin);  // 增加 margin 到右侧边界
 
-    // 绘制上边框
-    glVertex2f(x, y);
-    glVertex2f(x + m_pixelWidth, y);
+        // 绘制右边框（考虑 margin）
+        glVertex2f(x + m_pixelWidth + m_margin, y);  // 增加 margin 到右侧边界
+        glVertex2f(x + m_pixelWidth + m_margin, y + m_pixelHeight + m_margin);  // 增加 margin 到右侧边界
+    }
 
-    // 绘制下边框
-    glVertex2f(x, y + m_pixelHeight);
-    glVertex2f(x + m_pixelWidth, y + m_pixelHeight);
+    // 绘制行分隔线（考虑 margin）
+    if (m_showRowLine)
+    {
+        // 绘制上边框
+        glVertex2f(x, y);
+        glVertex2f(x + m_pixelWidth + m_margin, y);  // 增加 margin 到下侧边界
+
+        // 绘制下边框
+        glVertex2f(x, y + m_pixelHeight + m_margin);  // 增加 margin 到下侧边界
+        glVertex2f(x + m_pixelWidth + m_margin, y + m_pixelHeight + m_margin);  // 增加 margin 到下侧边界
+    }
+    
     glEnd();
 }
 
@@ -175,4 +208,35 @@ void Canvas::moveCanvas(int dx, int dy)
     if (m_openGL) {
         m_openGL->update(); // 确保界面刷新
     }
+}
+
+void Canvas::expandPixelSize()
+{
+    if(m_pixelSizeIndex >= g_pixelSize.size() - 1)
+    {
+        return;
+    }
+
+    if(m_pixelSizeIndex == 18)
+    {
+        int i =1;
+    }
+
+    m_pixelSizeIndex++;
+
+    m_pixelWidth = g_pixelSize[m_pixelSizeIndex];
+    m_pixelHeight = g_pixelSize[m_pixelSizeIndex];
+}
+
+void Canvas::reducePixelSize()
+{
+    if(m_pixelSizeIndex <= 0)
+    {
+        return;
+    }
+
+    m_pixelSizeIndex--;
+
+    m_pixelWidth = g_pixelSize[m_pixelSizeIndex];
+    m_pixelHeight = g_pixelSize[m_pixelSizeIndex];
 }

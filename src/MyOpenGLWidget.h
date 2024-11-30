@@ -25,6 +25,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;    // 添加鼠标按下事件
     void mouseMoveEvent(QMouseEvent *event) override;     // 添加鼠标移动事件
     void mouseReleaseEvent(QMouseEvent *event) override;  // 添加鼠标释放事件
+    void wheelEvent(QWheelEvent *event) override;          //鼠标滚轮事件
 
 private:
     bool isValidIndex(int row, int col);

@@ -4,6 +4,8 @@
 #include "Config.h"
 #include "GrayWhiteButton.h"
 
+std::vector<uint16_t> g_margin = {0, 1, 2, 3};
+ 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -25,9 +27,19 @@ void MainWindow::InitDialogControls()
     ui->label_color->setStyleSheet("QLabel { background-color: white; }");
 
     m_canvas.init(ui->openGLWidget);
-    m_canvas.setCanvasSize(g_config.m_rowNumber, g_config.m_rowNumber);
+    m_canvas.setCanvasSize(g_config.m_rowNumber, g_config.m_columnNumber);
     m_canvas.initColor(g_config.m_colorStr);
     ui->openGLWidget->setCanvas(&m_canvas);
+
+    ui->checkBox_row->setChecked(true);
+    ui->checkBox_col->setChecked(true);
+    ui->checkBox_display->setChecked(true);
+
+    for(int i =0; i < g_margin.size(); i++)
+    {
+        ui->comboBox_margin->addItem(QString::number(g_margin[i]));
+    }
+    ui->comboBox_margin->setCurrentIndex(0);
 
     initColorButton();
 }
@@ -99,8 +111,41 @@ void MainWindow::reprintCanvse(bool shouldReprint)
 {
     if(shouldReprint)
     {
-        m_canvas.setCanvasSize(g_config.m_rowNumber, g_config.m_rowNumber);
+        m_canvas.setCanvasSize(g_config.m_rowNumber, g_config.m_columnNumber);
         m_canvas.render();
     }
+}
+
+
+void MainWindow::on_checkBox_row_clicked(bool checked)
+{
+    m_canvas.setShowRowLine(checked);  
+    m_canvas.render();
+    ui->openGLWidget->update();
+}
+
+
+void MainWindow::on_checkBox_col_clicked(bool checked)
+{
+    m_canvas.setShowColLine(checked);  
+    m_canvas.render();
+    ui->openGLWidget->update();
+}
+
+
+void MainWindow::on_checkBox_display_clicked(bool checked)
+{
+    m_canvas.setShowRowLine(checked);
+    m_canvas.setShowColLine(checked);  
+    m_canvas.render();
+    ui->openGLWidget->update();
+}
+
+
+void MainWindow::on_comboBox_margin_currentIndexChanged(int index)
+{
+    m_canvas.setMargin(g_margin[index]);
+    m_canvas.render();
+    ui->openGLWidget->update();
 }
 

@@ -60,6 +60,14 @@ public:
         }
     }
 
+    void expandPixelSize();             //放大像素点尺寸
+
+    void reducePixelSize();             //缩小像素点尺寸
+
+    void setShowRowLine(bool isShould) {m_showRowLine = isShould;};
+
+    void setShowColLine(bool isShould) {m_showColLine = isShould;};
+
     void setPixelColor(int index, uint16_t colorIndex) { m_pixelColors[index] = colorIndex; } // 设置指定像素的颜色
     const std::vector<uint16_t>& getPixelColors() const { return m_pixelColors; }
 
@@ -86,7 +94,12 @@ private:
     std::vector<Color> m_colors;
     std::vector<uint16_t> m_pixelColors;     //存储每个像素点的颜色，uint16值对应m_colors对应索引的颜色
 
-    uint16_t m_painterColor = 0;
+    uint16_t m_painterColor = 0;              //画笔对应的颜色
+
+    uint16_t m_pixelSizeIndex = 6;            //存储像素点尺寸对应的索引
+
+    bool m_showRowLine = true;                //是否展示横向分割线
+    bool m_showColLine = true;                //是否展示纵向分割线
 };
 
 #endif

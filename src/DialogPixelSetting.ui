@@ -30,7 +30,7 @@
         </font>
        </property>
        <property name="text">
-        <string>横向数量</string>
+        <string>列数</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -58,7 +58,7 @@
         </font>
        </property>
        <property name="text">
-        <string>纵向数量</string>
+        <string>行数</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

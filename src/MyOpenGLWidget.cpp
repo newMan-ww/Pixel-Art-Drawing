@@ -13,7 +13,7 @@ MyOpenGLWidget::~MyOpenGLWidget()
 void MyOpenGLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // 设置背景色
+    glClearColor(1.0f, 1.0f, 0.0f, 0.0f); // 设置背景色
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, width(), 0, height(), -1, 1); // 设置投影坐标系范围
@@ -162,6 +162,25 @@ void MyOpenGLWidget::mouseReleaseEvent(QMouseEvent *event)
         // 停止右键长按
         m_isRightClicking = false;
     }
+}
+
+void MyOpenGLWidget::wheelEvent(QWheelEvent *event)
+{
+    // 判断滚轮的方向
+    if (event->angleDelta().y() > 0) {
+        // 滚轮向上滚动，放大像素
+        if (m_canvas) {
+            m_canvas->expandPixelSize();
+        }
+    } else {
+        // 滚轮向下滚动，缩小像素
+        if (m_canvas) {
+            m_canvas->reducePixelSize();
+        }
+    }
+
+    // 更新 OpenGL 渲染
+    update();  // 触发窗口重绘
 }
 
 bool MyOpenGLWidget::isValidIndex(int row, int col)

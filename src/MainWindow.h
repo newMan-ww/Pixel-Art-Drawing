@@ -24,6 +24,14 @@ private slots:
 
     void reprintCanvse(bool shouldReprint);
 
+    void on_checkBox_row_clicked(bool checked);
+
+    void on_checkBox_col_clicked(bool checked);
+
+    void on_checkBox_display_clicked(bool checked);
+
+    void on_comboBox_margin_currentIndexChanged(int index);
+
 private:
     void InitDialogControls();
 

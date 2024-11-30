@@ -121,8 +121,8 @@ public:
     void retranslateUi(QDialog *DialogPixelSetting)
     {
         DialogPixelSetting->setWindowTitle(QApplication::translate("DialogPixelSetting", "Dialog", nullptr));
-        label->setText(QApplication::translate("DialogPixelSetting", "\346\250\252\345\220\221\346\225\260\351\207\217", nullptr));
-        label_2->setText(QApplication::translate("DialogPixelSetting", "\347\272\265\345\220\221\346\225\260\351\207\217", nullptr));
+        label->setText(QApplication::translate("DialogPixelSetting", "\345\210\227\346\225\260", nullptr));
+        label_2->setText(QApplication::translate("DialogPixelSetting", "\350\241\214\346\225\260", nullptr));
         pushButton_ok->setText(QApplication::translate("DialogPixelSetting", "\342\210\232", nullptr));
         pushButton_cancel->setText(QApplication::translate("DialogPixelSetting", "\303\227", nullptr));
     } // retranslateUi

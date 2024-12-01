@@ -18,11 +18,17 @@ void MyOpenGLWidget::initializeGL()
     glLoadIdentity();
     glOrtho(0, width(), 0, height(), -1, 1); // 设置投影坐标系范围
     glMatrixMode(GL_MODELVIEW);
+
+    m_init_x = width();
+    m_init_y = height();
 }
 
 void MyOpenGLWidget::resizeGL(int w, int h)
 {
     glViewport(0, 0, w, h);
+
+    m_magnification_x = (float)w / m_init_x;
+    m_magnification_y = (float)h / m_init_y;
 }
 
 void MyOpenGLWidget::paintGL()
@@ -85,11 +91,14 @@ void MyOpenGLWidget::mouseMoveEvent(QMouseEvent *event)
         int x = event->x();
         int y = event->y();
 
+        x /= m_magnification_x;
+        y /= m_magnification_y;
+
         // 计算相对画布的坐标（偏移量）
         x -= m_canvas->getoffsetX();
         y += m_canvas->getoffsetY();
 
-        y = height() - y;  // OpenGL 的 y 坐标从底部开始增大
+        y = height() / m_magnification_y - y;  // OpenGL 的 y 坐标从底部开始增大
 
         // 计算鼠标当前位置对应的像素块的行列
         int row = y / (m_canvas->getPixelHeight() + m_canvas->getMargin());
@@ -127,14 +136,17 @@ void MyOpenGLWidget::mouseReleaseEvent(QMouseEvent *event)
         if(deltaX <= 3 && deltaY <= 3)
         {
             // 计算点击的位置
-            int x = event->x();
+            int x = event->x(); 
             int y = event->y();
+
+            x /= m_magnification_x;
+            y /= m_magnification_y;
 
             // 计算相对画布的坐标（偏移量）
             x -= m_canvas->getoffsetX();
             y += m_canvas->getoffsetY();
 
-            y = height() - y;  // OpenGL 的 y 坐标从底部开始增大
+            y = height() / m_magnification_y - y;  // OpenGL 的 y 坐标从底部开始增大
 
             // 计算点击的是哪一个像素块的行列
             int row = y / (m_canvas->getPixelHeight() + m_canvas->getMargin());

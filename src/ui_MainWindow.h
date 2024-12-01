@@ -66,6 +66,7 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(831, 575);
+        MainWindow->setMinimumSize(QSize(831, 575));
         action_pixelSetting = new QAction(MainWindow);
         action_pixelSetting->setObjectName(QString::fromUtf8("action_pixelSetting"));
         centralwidget = new QWidget(MainWindow);
@@ -162,7 +163,7 @@ public:
 
         comboBox_margin = new QComboBox(widget_control);
         comboBox_margin->setObjectName(QString::fromUtf8("comboBox_margin"));
-        comboBox_margin->setMinimumSize(QSize(40, 21));
+        comboBox_margin->setMinimumSize(QSize(33, 21));
 
         horizontalLayout_3->addWidget(comboBox_margin);
 
@@ -223,7 +224,7 @@ public:
         checkBox_row->setText(QApplication::translate("MainWindow", "\346\250\252\345\220\221\345\210\206\351\232\224\347\272\277", nullptr));
         checkBox_col->setText(QApplication::translate("MainWindow", "\347\272\265\345\220\221\345\210\206\351\232\224\347\272\277", nullptr));
         checkBox_display->setText(QApplication::translate("MainWindow", "\346\230\257\345\220\246\346\230\276\347\244\272", nullptr));
-        label_2->setText(QApplication::translate("MainWindow", "\345\203\217\347\264\240\347\202\271\351\227\264\351\232\224:", nullptr));
+        label_2->setText(QApplication::translate("MainWindow", "\345\203\217\347\264\240\351\227\264\351\232\224:", nullptr));
         menu->setTitle(QApplication::translate("MainWindow", "\350\256\276\347\275\256", nullptr));
     } // retranslateUi
 

@@ -38,6 +38,11 @@ private:
     QPoint m_pressPos;   // 记录鼠标上次的位置，用来控制鼠标释放时要不要改变像素点颜色
 
     bool m_isRightClicking = false;//记录鼠标右键是否被按下
+
+    int m_init_x;     //初始的x轴长度
+    int m_init_y;     //初始的y轴长度
+    float m_magnification_x = 1.0;  //x轴方向上的倍率，用来帮助界面被拉伸时，找到正确的像素点索引
+    float m_magnification_y = 1.0;  //y轴方向上的倍率，用来帮助界面被拉伸时，找到正确的像素点索引
 };
 
 #endif // MYOPENGLWIDGET_H

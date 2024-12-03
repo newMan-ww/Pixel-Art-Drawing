@@ -71,6 +71,8 @@ public:
     void setPixelColor(int index, uint16_t colorIndex) { m_pixelColors[index] = colorIndex; } // 设置指定像素的颜色
     const std::vector<uint16_t>& getPixelColors() const { return m_pixelColors; }
 
+    void setPixelSize(uint32_t size) {m_pixelColors.resize(size);};     //设置存储像素颜色的vector的大小
+
 private:
     void paintLine(int x, int y);
 

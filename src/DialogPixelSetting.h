@@ -1,4 +1,4 @@
-#ifndef DIALOGPIXELSETTING_H
+﻿#ifndef DIALOGPIXELSETTING_H
 #define DIALOGPIXELSETTING_H
 
 #include <QDialog>

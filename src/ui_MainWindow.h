@@ -34,7 +34,7 @@ class Ui_MainWindow
 public:
     QAction *action_pixelSetting;
     QWidget *centralwidget;
-    QGridLayout *gridLayout;
+    QGridLayout *gridLayout_4;
     QHBoxLayout *horizontalLayout;
     MyOpenGLWidget *openGLWidget;
     QVBoxLayout *verticalLayout;
@@ -48,7 +48,6 @@ public:
     QLabel *label_color;
     QGridLayout *gridLayout_colors;
     QLabel *label_line;
-    QGridLayout *gridLayout_line;
     QGridLayout *gridLayout_2;
     QCheckBox *checkBox_row;
     QCheckBox *checkBox_col;
@@ -56,6 +55,12 @@ public:
     QHBoxLayout *horizontalLayout_3;
     QLabel *label_2;
     QComboBox *comboBox_margin;
+    QLabel *label_function;
+    QGridLayout *gridLayout;
+    QPushButton *pushButton_import_txt;
+    QPushButton *pushButton_export_txt;
+    QPushButton *pushButton_import_pic;
+    QPushButton *pushButton_export_pic;
     QSpacerItem *verticalSpacer_2;
     QStatusBar *statusbar;
     QMenuBar *menubar;
@@ -71,8 +76,8 @@ public:
         action_pixelSetting->setObjectName(QString::fromUtf8("action_pixelSetting"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        gridLayout = new QGridLayout(centralwidget);
-        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        gridLayout_4 = new QGridLayout(centralwidget);
+        gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(0);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
@@ -109,13 +114,13 @@ public:
         gridLayout_3 = new QGridLayout(widget_control);
         gridLayout_3->setSpacing(4);
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
-        gridLayout_3->setContentsMargins(4, 4, 4, 4);
+        gridLayout_3->setContentsMargins(6, 4, 4, 4);
         verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         verticalLayout_2->setContentsMargins(-1, -1, -1, 7);
         label_color = new QLabel(widget_control);
         label_color->setObjectName(QString::fromUtf8("label_color"));
-        label_color->setMinimumSize(QSize(0, 15));
+        label_color->setMinimumSize(QSize(187, 20));
         label_color->setAlignment(Qt::AlignCenter);
 
         verticalLayout_2->addWidget(label_color);
@@ -127,14 +132,10 @@ public:
 
         label_line = new QLabel(widget_control);
         label_line->setObjectName(QString::fromUtf8("label_line"));
+        label_line->setMinimumSize(QSize(187, 20));
         label_line->setAlignment(Qt::AlignCenter);
 
         verticalLayout_2->addWidget(label_line);
-
-        gridLayout_line = new QGridLayout();
-        gridLayout_line->setObjectName(QString::fromUtf8("gridLayout_line"));
-
-        verticalLayout_2->addLayout(gridLayout_line);
 
         gridLayout_2 = new QGridLayout();
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
@@ -175,6 +176,38 @@ public:
 
         verticalLayout_2->addLayout(gridLayout_2);
 
+        label_function = new QLabel(widget_control);
+        label_function->setObjectName(QString::fromUtf8("label_function"));
+        label_function->setMinimumSize(QSize(187, 20));
+        label_function->setAlignment(Qt::AlignCenter);
+
+        verticalLayout_2->addWidget(label_function);
+
+        gridLayout = new QGridLayout();
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        pushButton_import_txt = new QPushButton(widget_control);
+        pushButton_import_txt->setObjectName(QString::fromUtf8("pushButton_import_txt"));
+
+        gridLayout->addWidget(pushButton_import_txt, 0, 0, 1, 1);
+
+        pushButton_export_txt = new QPushButton(widget_control);
+        pushButton_export_txt->setObjectName(QString::fromUtf8("pushButton_export_txt"));
+
+        gridLayout->addWidget(pushButton_export_txt, 0, 1, 1, 1);
+
+        pushButton_import_pic = new QPushButton(widget_control);
+        pushButton_import_pic->setObjectName(QString::fromUtf8("pushButton_import_pic"));
+
+        gridLayout->addWidget(pushButton_import_pic, 1, 0, 1, 1);
+
+        pushButton_export_pic = new QPushButton(widget_control);
+        pushButton_export_pic->setObjectName(QString::fromUtf8("pushButton_export_pic"));
+
+        gridLayout->addWidget(pushButton_export_pic, 1, 1, 1, 1);
+
+
+        verticalLayout_2->addLayout(gridLayout);
+
         verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout_2->addItem(verticalSpacer_2);
@@ -193,7 +226,7 @@ public:
         horizontalLayout->setStretch(0, 7);
         horizontalLayout->setStretch(1, 2);
 
-        gridLayout->addLayout(horizontalLayout, 0, 0, 1, 1);
+        gridLayout_4->addLayout(horizontalLayout, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
@@ -201,7 +234,7 @@ public:
         MainWindow->setStatusBar(statusbar);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 831, 26));
+        menubar->setGeometry(QRect(0, 0, 831, 21));
         menu = new QMenu(menubar);
         menu->setObjectName(QString::fromUtf8("menu"));
         MainWindow->setMenuBar(menubar);
@@ -225,6 +258,11 @@ public:
         checkBox_col->setText(QApplication::translate("MainWindow", "\347\272\265\345\220\221\345\210\206\351\232\224\347\272\277", nullptr));
         checkBox_display->setText(QApplication::translate("MainWindow", "\346\230\257\345\220\246\346\230\276\347\244\272", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "\345\203\217\347\264\240\351\227\264\351\232\224:", nullptr));
+        label_function->setText(QApplication::translate("MainWindow", "\345\212\237\350\203\275", nullptr));
+        pushButton_import_txt->setText(QApplication::translate("MainWindow", "\345\257\274\345\205\245txt\346\226\207\344\273\266", nullptr));
+        pushButton_export_txt->setText(QApplication::translate("MainWindow", "\345\257\274\345\207\272\344\270\272txt\346\226\207\344\273\266", nullptr));
+        pushButton_import_pic->setText(QApplication::translate("MainWindow", "\345\257\274\345\205\245\345\233\276\347\211\207", nullptr));
+        pushButton_export_pic->setText(QApplication::translate("MainWindow", "\345\257\274\345\207\272\344\270\272\345\233\276\347\211\207", nullptr));
         menu->setTitle(QApplication::translate("MainWindow", "\350\256\276\347\275\256", nullptr));
     } // retranslateUi
 

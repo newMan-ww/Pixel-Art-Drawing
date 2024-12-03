@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -31,6 +31,14 @@ private slots:
     void on_checkBox_display_clicked(bool checked);
 
     void on_comboBox_margin_currentIndexChanged(int index);
+
+    void on_pushButton_import_txt_clicked();
+
+    void on_pushButton_export_txt_clicked();
+
+    void on_pushButton_import_pic_clicked();
+
+    void on_pushButton_export_pic_clicked();
 
 private:
     void InitDialogControls();

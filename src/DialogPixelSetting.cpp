@@ -1,4 +1,4 @@
-#include "DialogPixelSetting.h"
+﻿#include "DialogPixelSetting.h"
 #include "ui_DialogPixelSetting.h"
 #include "Config.h"
 

@@ -22,7 +22,8 @@ public:
     uint16_t m_rowNumber;
     uint16_t m_columnNumber;
 
-    std::vector<std::string> m_colorStr;
+    std::vector<std::string> m_buttonColorStr;
+    std::vector<std::string> m_CanvasColorStr;
 };
 
 extern Config g_config;

@@ -4,6 +4,7 @@
 #include "Config.h"
 #include "GrayWhiteButton.h"
 
+#include <unordered_map>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <fstream>
@@ -35,7 +36,7 @@ void MainWindow::InitDialogControls()
 
     m_canvas.init(ui->openGLWidget);
     m_canvas.setCanvasSize(g_config.m_rowNumber, g_config.m_columnNumber);
-    m_canvas.initColor(g_config.m_colorStr);
+    m_canvas.initColor(g_config.m_buttonColorStr);
     ui->openGLWidget->setCanvas(&m_canvas);
 
     ui->checkBox_row->setChecked(true);
@@ -65,7 +66,7 @@ void MainWindow::initColorButton()
         }
     }
 
-    std::vector<std::string> colorStr = g_config.m_colorStr;
+    std::vector<std::string> colorStr = g_config.m_buttonColorStr;
     // 在 colorStr 的开头插入一个灰白渐变的按钮
     colorStr.insert(colorStr.begin(), "#C0C0C0");  // 灰色，作为默认渐变色的代表
 
@@ -93,7 +94,13 @@ void MainWindow::initColorButton()
 
 void MainWindow::onColorClicked(int colorIndex)
 {
-    m_canvas.setPainterColor(colorIndex);
+    if(colorIndex == 0)
+    {
+        m_canvas.setPainterColor(colorIndex);
+    }
+    else{
+        m_canvas.setPainterColor(colorIndex + g_config.m_CanvasColorStr.size());
+    }
 }
 
 void MainWindow::on_pushButton_hide_show_clicked()
@@ -245,10 +252,14 @@ void MainWindow::on_pushButton_import_txt_clicked()
     // 将解析的数据应用到画布（Canvas）上
     g_config.m_rowNumber = row;
     g_config.m_columnNumber = col;
-    g_config.m_colorStr = colors;
+    g_config.m_CanvasColorStr = colors;
+
+    //用txt中自带的画布的颜色和按钮的颜色一起初始化画布的颜色
+    std::vector<std::string> buttonAndCanvasColors(g_config.m_CanvasColorStr);
+    buttonAndCanvasColors.insert(buttonAndCanvasColors.end(), g_config.m_buttonColorStr.begin(),g_config.m_buttonColorStr.end());
 
     m_canvas.setCanvasSize(g_config.m_rowNumber, g_config.m_columnNumber);
-    m_canvas.initColor(g_config.m_colorStr);
+    m_canvas.initColor(buttonAndCanvasColors);
     m_canvas.setPixelSize(row * col);
     for(int i = 0; i < (row * col); i++)
     {
@@ -258,6 +269,34 @@ void MainWindow::on_pushButton_import_txt_clicked()
     ui->openGLWidget->update();
 }
 
+void correctColorsAndPixel(std::vector<std::string>& colors, std::vector<uint16_t>& pixels)
+{
+    // 用来存储每个颜色第一次出现的位置
+    std::unordered_map<std::string, uint16_t> colorMap;
+
+    // 遍历 colors，去除重复的颜色，并记录每个颜色的索引
+    std::vector<std::string> filteredColors;
+    for (size_t i = 0; i < colors.size(); ++i) {
+        if (colorMap.find(colors[i]) == colorMap.end()) {
+            // 颜色没有出现过，加入 filteredColors
+            filteredColors.push_back(colors[i]);
+            // 更新 colorMap，记录这个颜色的索引（从1开始索引）
+            colorMap[colors[i]] = filteredColors.size();
+        }
+    }
+
+    // 更新 pixels 中的颜色索引
+    for (size_t i = 0; i < pixels.size(); ++i) {
+        if (pixels[i] != 0) { // 忽略背景色的 0 值
+            // 将 pixels[i] 的颜色索引映射到新索引
+            std::string oldColor = colors[pixels[i] - 1]; // 索引值减1找到颜色
+            pixels[i] = colorMap[oldColor]; // 更新为新的索引
+        }
+    }
+
+    // 将更新后的 filteredColors 替换原来的 colors
+    colors = std::move(filteredColors);
+}
 
 void MainWindow::on_pushButton_export_txt_clicked()
 {
@@ -265,7 +304,8 @@ void MainWindow::on_pushButton_export_txt_clicked()
     int col = m_canvas.getCol();
 
     // 获取颜色列表和像素颜色
-    std::vector<std::string> colors = g_config.m_colorStr;
+    std::vector<std::string> colors = g_config.m_CanvasColorStr;
+    colors.insert(colors.end(), g_config.m_buttonColorStr.begin(),g_config.m_buttonColorStr.end());
     std::vector<uint16_t> pixels = m_canvas.getPixelColors();
 
     // 如果像素数据的大小与画布的行列数不一致
@@ -275,6 +315,36 @@ void MainWindow::on_pushButton_export_txt_clicked()
         return;
     }
 
+    //保证colors中的颜色唯一
+    correctColorsAndPixel(colors, pixels);
+
+    // 查找未使用的颜色索引
+    std::vector<bool> usedColors(colors.size() + 1, false);
+    for (uint16_t pixel : pixels) {
+        if (pixel < colors.size() + 1) {
+            usedColors[pixel] = true;  // 标记该颜色被使用
+        }
+    }
+    usedColors[0] = false;
+
+    std::vector<std::string> filteredColors;
+
+    // 遍历 colors，保留被使用的颜色，并更新 pixels
+    for (size_t i = 0; i < colors.size(); ++i) 
+    {
+        if (usedColors[i + 1]) 
+        {
+            // 如果该颜色被使用，则保留
+            filteredColors.push_back(colors[i]);
+
+            // 同时更新 pixels 中引用该颜色的索引
+            for (size_t j = 0; j < pixels.size(); ++j) {
+                if (pixels[j] == i + 1) {
+                    pixels[j] = filteredColors.size();  // 更新为新的索引
+                }
+            }
+        }
+    }
     // 弹出文件保存对话框，选择文件保存路径
     QString fileName = QFileDialog::getSaveFileName(this, "保存文件", "./", "Text Files (*.txt)");
 
@@ -298,7 +368,7 @@ void MainWindow::on_pushButton_export_txt_clicked()
 
     // 写入颜色信息
     outFile << "Colors:\n";
-    for (const auto& color : colors) {
+    for (const auto& color : filteredColors) {
         outFile << color << "\n";
     }
 

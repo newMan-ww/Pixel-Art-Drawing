@@ -390,7 +390,34 @@ void MainWindow::on_pushButton_export_txt_clicked()
 
 void MainWindow::on_pushButton_import_pic_clicked()
 {
+    std::vector<uint16_t> pixels;
+    std::vector<std::string> colors;
+    uint16_t row = g_config.m_rowNumber;
+    uint16_t col = g_config.m_columnNumber; 
 
+    QString imagePath = QFileDialog::getOpenFileName(nullptr, "Open Image", ".", "Images (*.png *.jpg *.bmp)");
+    if (!imagePath.isEmpty()) {
+        m_imageParser.parseImageToPixelsAndColors(imagePath, row, col, pixels, colors);
+
+        // 处理 pixels 和 colors
+        if(pixels.size() == (row * col) && colors.size() > 0)
+        {
+            std::vector<std::string> buttonAndCanvasColors(colors);
+            buttonAndCanvasColors.insert(buttonAndCanvasColors.end(), g_config.m_buttonColorStr.begin(),g_config.m_buttonColorStr.end());
+
+            g_config.m_CanvasColorStr = colors;
+            m_canvas.initColor(buttonAndCanvasColors);
+            m_canvas.setPixelSize(row * col);
+
+            for(int i = 0; i < (row * col); i++)
+            {
+                m_canvas.setPixelColor(i, pixels[i]);
+            }
+
+            ui->openGLWidget->update();
+        }
+
+    }
 }
 
 

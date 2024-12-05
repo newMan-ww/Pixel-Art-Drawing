@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include "ui_MainWindow.h"
 #include "Canvas.h"
-
+#include "ImagePixelParser.h"
 namespace Ui {
 class MainWindow;
 }
@@ -50,6 +50,7 @@ private:
 private:
     Ui::MainWindow *ui;
     Canvas m_canvas;
+    ImageParser m_imageParser;
 };
 
 #endif // MAINWINDOW_H

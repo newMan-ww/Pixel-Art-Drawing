@@ -3,9 +3,11 @@
 #include "DialogPixelSetting.h"
 #include "Config.h"
 #include "GrayWhiteButton.h"
+#include "functions.h"
 
 #include <unordered_map>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QMessageBox>
 #include <fstream>
 #include <sstream>
@@ -179,7 +181,10 @@ void MainWindow::on_comboBox_margin_currentIndexChanged(int index)
 void MainWindow::on_pushButton_import_txt_clicked()
 {
     // 弹出文件选择对话框，让用户选择要加载的txt文件
-    QString fileName = QFileDialog::getOpenFileName(this, "打开文件", "./", "Text Files (*.txt)");
+    QString fileName = QFileDialog::getOpenFileName(this, 
+                                    QString::fromStdString(GBKToUTF8("选择文件")), 
+                                    "./", 
+                                    "Text Files (*.txt)");
 
     // 如果用户取消了选择文件，则返回
     if (fileName.isEmpty()) {
@@ -191,7 +196,8 @@ void MainWindow::on_pushButton_import_txt_clicked()
 
     // 判断文件是否打开成功
     if (!inFile.is_open()) {
-        QMessageBox::warning(this, "打开失败", "无法打开文件进行读取！");
+        QMessageBox::warning(this, QString::fromStdString(GBKToUTF8("打开失败")), 
+                                                        QString::fromStdString(GBKToUTF8("无法打开文件进行读取！")));
         return;
     }
 
@@ -242,7 +248,8 @@ void MainWindow::on_pushButton_import_txt_clicked()
 
     // 检查解析的数据是否正确
     if (pixels.size() != (row * col)) {
-        QMessageBox::warning(this, "数据错误", "文件中的数据格式不正确！");
+        QMessageBox::warning(this, QString::fromStdString(GBKToUTF8("数据错误")), 
+                                    QString::fromStdString(GBKToUTF8("文件中的数据格式不正确！")));
         return;
     }
 
@@ -311,7 +318,8 @@ void MainWindow::on_pushButton_export_txt_clicked()
     // 如果像素数据的大小与画布的行列数不一致
     if (pixels.size() != (row * col)) {
         // 弹出错误提示框
-        QMessageBox::warning(this, "数据错误", "像素数据与画布大小不匹配！");
+        QMessageBox::warning(this, QString::fromStdString(GBKToUTF8("数据错误")), 
+                                    QString::fromStdString(GBKToUTF8("像素数据与画布大小不匹配！")));
         return;
     }
 
@@ -346,7 +354,7 @@ void MainWindow::on_pushButton_export_txt_clicked()
         }
     }
     // 弹出文件保存对话框，选择文件保存路径
-    QString fileName = QFileDialog::getSaveFileName(this, "保存文件", "./", "Text Files (*.txt)");
+    QString fileName = QFileDialog::getSaveFileName(this, QString::fromStdString(GBKToUTF8("保存文件")), "./", "Text Files (*.txt)");
 
     // 如果用户取消了保存，fileName 会是空字符串
     if (fileName.isEmpty()) {
@@ -358,7 +366,8 @@ void MainWindow::on_pushButton_export_txt_clicked()
 
     // 判断文件是否打开成功
     if (!outFile.is_open()) {
-        QMessageBox::warning(this, "保存失败", "无法打开文件进行写入！");
+        QMessageBox::warning(this, QString::fromStdString(GBKToUTF8("保存失败")),
+                                    QString::fromStdString(GBKToUTF8("无法打开文件进行写入！")));
         return;
     }
 
@@ -384,7 +393,8 @@ void MainWindow::on_pushButton_export_txt_clicked()
     outFile.close();
 
     // 弹出提示框告知用户保存成功
-    QMessageBox::information(this, "保存成功", "数据已成功保存到文件！");
+    QMessageBox::information(this, QString::fromStdString(GBKToUTF8("保存成功")), 
+                                    QString::fromStdString(GBKToUTF8("数据已成功保存到文件！")));
 }
 
 
@@ -395,7 +405,7 @@ void MainWindow::on_pushButton_import_pic_clicked()
     uint16_t row = g_config.m_rowNumber;
     uint16_t col = g_config.m_columnNumber; 
 
-    QString imagePath = QFileDialog::getOpenFileName(nullptr, "Open Image", ".", "Images (*.png *.jpg *.bmp)");
+    QString imagePath = QFileDialog::getOpenFileName(nullptr, QString::fromStdString(GBKToUTF8("选择图片")), ".", "Images (*.png *.jpg *.bmp)");
     if (!imagePath.isEmpty()) {
         m_imageParser.parseImageToPixelsAndColors(imagePath, row, col, pixels, colors);
 
@@ -423,6 +433,40 @@ void MainWindow::on_pushButton_import_pic_clicked()
 
 void MainWindow::on_pushButton_export_pic_clicked()
 {
+    uint16_t row = g_config.m_rowNumber;
+    uint16_t col = g_config.m_columnNumber; 
+    const std::vector<uint16_t> pixels = m_canvas.getPixelColors();
 
+    if(pixels.size() != (row * col))
+    {
+        QMessageBox::warning(this, QString::fromStdString(GBKToUTF8("数据错误")), 
+                            QString::fromStdString(GBKToUTF8("像素数据与画布大小不匹配！")));
+    }
+
+    std::vector<std::string> colors(g_config.m_CanvasColorStr);
+    colors.insert(colors.end(), g_config.m_buttonColorStr.begin(),g_config.m_buttonColorStr.end());
+
+    // 获取像素大小
+    bool ok;
+    int pixelSize = QInputDialog::getInt(this, 
+                                         QString::fromStdString(GBKToUTF8("像素大小")),
+                                         QString::fromStdString(GBKToUTF8("请输入像素大小（建议值为1-50）：")), 
+                                         10, 1, 50, 1, &ok);
+    if (!ok) {
+        // 用户取消输入
+        return;
+    }
+
+    // 获取保存文件路径
+    QString fileName = QFileDialog::getSaveFileName(this, 
+                                                    QString::fromStdString(GBKToUTF8("保存图片")), 
+                                                    "./", 
+                                                    "PNG Files (*.png)");
+    if (fileName.isEmpty()) {
+        return; // 用户取消保存
+    }
+
+    // 调用图像生成函数
+    m_imageParser.generateImageFromPixelsAndColors(row, col, pixels, colors, pixelSize, fileName);
 }
 

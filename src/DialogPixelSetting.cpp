@@ -1,13 +1,15 @@
 ﻿#include "DialogPixelSetting.h"
 #include "ui_DialogPixelSetting.h"
+
 #include "Config.h"
+#include "functions.h"
 
 DialogPixelSetting::DialogPixelSetting(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::DialogPixelSetting)
 {
     ui->setupUi(this);
-    setWindowTitle("setting");
+    setWindowTitle(QString::fromStdString(GBKToUTF8("设置像素数量")));
     //关闭帮助按钮
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint | Qt::WindowCloseButtonHint);
     initdialog();

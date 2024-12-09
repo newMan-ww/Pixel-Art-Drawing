@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <QFileDialog>
 
+#include "functions.h"
+
 ImageParser::ImageParser()
 {
     
@@ -36,12 +38,8 @@ void ImageParser::parseImageToPixelsAndColors(const QString& imagePath, int rows
     // 计算每个像素块的宽度和高度
     int imgWidth = image.width();
     int imgHeight = image.height();
-    int blockWidth = imgWidth / cols;
-    int blockHeight = imgHeight / rows;
-
-    // 如果图片的宽度或高度不能被行列数整除，处理最后一行和最后一列
-    int extraWidth = imgWidth % cols;
-    int extraHeight = imgHeight % rows;
+    float blockWidth = static_cast<float>(imgWidth) / cols;  // 使用浮点数计算
+    float blockHeight = static_cast<float>(imgHeight) / rows;
 
     std::unordered_map<QString, uint16_t, QStringHasher> colorMap;  // 使用自定义的哈希函数
     std::vector<std::string> colorList;
@@ -49,25 +47,21 @@ void ImageParser::parseImageToPixelsAndColors(const QString& imagePath, int rows
     pixels.clear();
     colorList.clear();
 
+    // 遍历所有的像素块
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            // 计算当前像素块的左上角坐标
-            int x = j * blockWidth;
-            int y = i * blockHeight;
+            // 获取像素块中心点的坐标以获得更准确的颜色
+            int x = static_cast<int>((j + 0.5) * blockWidth);  // 中心点的 x 坐标
+            int y = static_cast<int>((i + 0.5) * blockHeight); // 中心点的 y 坐标
 
-            // 处理最后一行和最后一列，确保不超出图片边界
-            if (j == cols - 1) {
-                x = imgWidth - blockWidth;  // 确保最后一列的像素块不会超出图片边界
-            }
-            if (i == rows - 1) {
-                y = imgHeight - blockHeight;  // 确保最后一行的像素块不会超出图片边界
-            }
+            // 确保 x 和 y 在图像边界内
+            x = std::min(x, imgWidth - 1);
+            y = std::min(y, imgHeight - 1);
 
-            // 反转y坐标，解决图片上下颠倒问题
             int flippedY = imgHeight - y - 1;
 
-            // 获取当前像素块的颜色（选择该像素块的左上角点）
-            QColor pixelColor = image.pixelColor(x, flippedY);  // 使用翻转后的y坐标
+            // 获取像素块的颜色
+            QColor pixelColor = image.pixelColor(x, flippedY);
 
             // 将 RGB 值转换为字符串
             QString colorStr = colorToString(pixelColor.red(), pixelColor.green(), pixelColor.blue());
@@ -85,6 +79,52 @@ void ImageParser::parseImageToPixelsAndColors(const QString& imagePath, int rows
     }
 
     colors = colorList;
+}
+
+// 根据像素点和颜色生成图片
+void ImageParser::generateImageFromPixelsAndColors(int rows, int cols, 
+                                                   const std::vector<uint16_t>& pixels, 
+                                                   const std::vector<std::string>& colors, 
+                                                   int pixelSize, 
+                                                   const QString& outputPath)
+{
+    int imgWidth = cols * pixelSize;
+    int imgHeight = rows * pixelSize;
+
+    QImage image(imgWidth, imgHeight, QImage::Format_RGB32);
+
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            int pixelIndex = i * cols + j;
+            uint16_t colorIndex = pixels[pixelIndex];
+
+            if (colorIndex == 0) { // 默认背景颜色
+                image.fill(Qt::white);
+                continue;
+            }
+
+            // 转换颜色字符串为 QColor
+            QColor color(QString::fromStdString(colors[colorIndex - 1]));
+            int startX = j * pixelSize;
+             int startY = (rows - 1 - i) * pixelSize; // 翻转 Y 轴方向
+
+            for (int x = startX; x < startX + pixelSize; ++x) {
+                for (int y = startY; y < startY + pixelSize; ++y) {
+                    image.setPixelColor(x, y, color);
+                }
+            }
+        }
+    }
+
+    if (!image.save(outputPath)) {
+        QMessageBox::warning(nullptr, 
+                            QString::fromStdString(GBKToUTF8("失败")), 
+                            QString::fromStdString(GBKToUTF8("图片导出失败！")));
+    } else {
+        QMessageBox::information(nullptr, 
+                            QString::fromStdString(GBKToUTF8("完成")), 
+                            QString::fromStdString(GBKToUTF8("图片已成功导出！")));
+    }
 }
 
 // 将 RGB 值转换为颜色的十六进制表示字符串

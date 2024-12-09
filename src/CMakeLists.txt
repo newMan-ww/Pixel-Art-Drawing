@@ -16,6 +16,7 @@ if(WIN32)
         MyOpenGLWidget.cpp
         GrayWhiteButton.cpp
         ImagePixelParser.cpp
+        functions.cpp
         )
 
     set(HEADERS
@@ -26,6 +27,7 @@ if(WIN32)
         MyOpenGLWidget.h
         GrayWhiteButton.h
         ImagePixelParser.h
+        functions.h
         )
 
     set(FORMS

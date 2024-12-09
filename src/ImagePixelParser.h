@@ -18,6 +18,12 @@ public:
                                               std::vector<uint16_t>& pixels,
                                               std::vector<std::string>& colors);
 
+    void ImageParser::generateImageFromPixelsAndColors(int rows, int cols, 
+                                            const std::vector<uint16_t>& pixels, 
+                                            const std::vector<std::string>& colors, 
+                                            int pixelSize, 
+                                            const QString& outputPath);
+
     QString ImageParser::colorToString(int r, int g, int b);
 };
 
